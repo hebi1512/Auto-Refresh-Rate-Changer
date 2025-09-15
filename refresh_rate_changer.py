@@ -101,6 +101,8 @@ class RefreshApp:
 
         tk.Button(root, text="Thêm cấu hình", command=self.add_config).grid(row=2, column=1, pady=10)
 
+        tk.Button(root, text="Xóa cấu hình", command=self.remove_selected).grid(row=2, column=2, pady=10)
+
         self.listbox = tk.Listbox(root, width=60, height=10)
         self.listbox.grid(row=3, column=0, columnspan=3, padx=10, pady=10)
 
@@ -138,6 +140,17 @@ class RefreshApp:
         self.listbox.delete(0, tk.END)
         for app, rate in self.config.items():
             self.listbox.insert(tk.END, f"{app} -> {rate} Hz")
+
+    def remove_selected(self):
+        selected = self.listbox.curselection()
+        if not selected:
+            return
+        text = self.listbox.get(selected[0])
+        exe = text.split(" -> ")[0].strip()
+        if exe in self.config:
+            del self.config[exe]
+            save_config(self.config)
+            self.refresh_listbox()
 
     def monitor_apps(self):
         default_rate = None
